@@ -2,9 +2,9 @@
 # 배포할때에는 주석처리하시면 안됩니다. 
 # 주석처리 방법은 "Ctrl + "/"" 누르기
 # ---------------------------------------------------
-__import__('pysqlite3')
-import sys
-sys.modules['sqlite3'] = sys.modules.pop('pysqlite3')
+# __import__('pysqlite3')
+# import sys
+# sys.modules['sqlite3'] = sys.modules.pop('pysqlite3')
 # ---------------------------------------------------
 
 from langchain.text_splitter import RecursiveCharacterTextSplitter
@@ -40,7 +40,7 @@ chain = LLMChain(llm=llm, prompt=prompt)
 
 #로컬 환경에서 내 api key로 돌릴때 
 # ---------------------------------------------------
-#os.environ["OPENAI_API_KEY"] ="" 
+os.environ["OPENAI_API_KEY"] ="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" 
 # ---------------------------------------------------
 
 #첫번째 구현 방법: Streamlit 배포할때 OpenAI API key로 돌려도 된다면 다음 코드로 배포하기
@@ -51,14 +51,14 @@ chain = LLMChain(llm=llm, prompt=prompt)
 
 # 두번째 구현 방법: 사용자의 api key 받아서 돌리기
 # ---------------------------------------------------
-openai_api_key = st.sidebar.text_input("OpenAI API Key", type="password")
+# openai_api_key = st.sidebar.text_input("OpenAI API Key", type="password")
 
-if not openai_api_key:
-    st.info("OpenAI API를 먼저 입력해주세요.")
-    st.stop()
+# if not openai_api_key:
+#     st.info("OpenAI API를 먼저 입력해주세요.")
+#     st.stop()
 
-import os
-os.environ["OPENAI_API_KEY"] = openai_api_key
+# import os
+# os.environ["OPENAI_API_KEY"] = openai_api_key
 # ---------------------------------------------------
 
 
@@ -138,19 +138,38 @@ from langchain.prompts import MessagesPlaceholder
 # AI 에이전트가 사용할 프롬프트 짜주기
 system_message = SystemMessage(
     content=(
-        "You are service agent that converts complex reading material into easy read material for mentally disabled people"
-        "Do your best to convert the reading material into the most simple terms"
-        "Look up for the example using the tools you have"
-        "Follow these rules: "
-        "1. Write in short sentences of 15-20 words"
-        "2. Skip a line for each sentence"
-        "2. Write as if you are speaking."
-        "3. Each sentence has one idea."
-        "4. Use active verbs as much as possible."
-        "5. Keep the language personal e.g. you, we "
-        "6. Use drop down bullet points to list."
-        "7. Reduce punctuation as much as you can."
-       #"Make sure to answer in Korean."
+       "Make sure to answer in Korean."
+        "Mission:"
+        "읽기 쉬운 글은 텍스트로 제시된 자료를 지적능력에 제한이 있는 발달장애인이나 문해력이 부족하여 글을 읽고 이해하는 것이 어려운 사람들이 자료의 내용을 쉽게 이해할 수 있는 콘텐츠로 변환하는 데 중점을 둔 GPT입니다."
+        "사용자가 입력한 단어에 대해 아래의 예시와 같이 수정하여 작성해주세요."
+        "Rule 1:"
+        "문장을 작성할 때는 문장의 내용에 기반하여 끊어 읽어야 하는 부분에서 줄바꿈(행을 바꾸고)을 하고 왼쪽 정렬을 한다."
+        "Example:"
+        """"밖에 나갈 때는 두꺼운 옷, 모자, 장갑, 신발을 준비합니다.""""의 경우, 아래와 같이 수정한다."
+        "밖에 나갈 때는,"
+        "두꺼운 옷, 모자, 장갑, 신발을"
+        "준비합니다."
+        "Rule 2:"
+        "사용자가 어떤 단어의 뜻을 질문하면, 읽기 쉽게 답변해줘."
+        "Example:"
+        "'이브'가 무슨 뜻이야? 라고 질문하면 아래의 [1], [2], [3]의 순서대로 대답할 수 있어."
+        "이모티콘을 5개 이하로 포함시켜서 문장을 작성해."
+        "[1] '이브' 이런 뜻이에요."	
+        "어떤 기념일의 전날, 전날 밤."
+        "예를 들어, 크리스마스는 12월 25일이고, 크리스마스 이브는 12월 24일이에요. 12월 24일 밤이나, 그날 하루 전체를 ‘크리스마스 이브’라고 하지요."
+        "이브은 영어 단어로, Eve 라고 써요. 밤을 뜻하는 이브닝(Evening)의 줄임말이에요."
+        "[2] '이브'는 이렇게 쓰여요"	
+        ":단안경을_쓴_얼굴: 크리스마스 이브에 뭐 할 거야?"
+        ":안아주는_얼굴: 친구들이랑 같이 놀이공원에 가기로 했어. 크리스마스 이브여서 불꽃놀이를 한대!"
+        "[3] 하나만 더!"
+        "크리스마스뿐만 아니라"
+        "크리스마스 이브를 축하하고 즐기는 사람도 늘어났어요."
+        "크리스마스 전날부터"
+        "크리스마스를 기념해 파티를 하거나 교회에 가기도 해요."
+        "꼭 크리스마스가 아니어도"
+        "기념일이나 휴일 전날을 'OO 이브'라고 부르는 일 이 많아졌어요."
+        "설날 전날은 설날 이브, 생일 전날은 생일 이브라고 불러요."
+        "특별한 날을 하루라도 더 즐기고 싶은 마음 아닐까요?"
     )
 )
 
@@ -176,32 +195,20 @@ agent_executor = AgentExecutor(
 # Function to scrape text from a URL
 def scrape_text_from_url(url):
     try:
-        print("111")
         response = requests.get(url)
-        print("111111")
         if response.status_code == 200:
-            print("2")
             soup = BeautifulSoup(response.content, 'html.parser')
             return ' '.join(p.get_text().strip() for p in soup.find_all('p'))
         else:
-            print("3")
             return "Failed to retrieve content from URL."
     except Exception as e:
-        print("4")
         return f"An error occurred: {e}"
-
-# from langchain.document_loaders import WebBaseLoader
-
-# loader = WebBaseLoader("https://sosoeasyword.com/27/?q=YToxOntzOjEyOiJrZXl3b3JkX3R5cGUiO3M6MzoiYWxsIjt9&bmode=view&idx=17122350&t=board")
-# data = loader.load()
 
 # Function to process the user input
 def process_user_input(user_input):
     if validators.url(user_input):  # Check if input is a valid URL
-        print("333")
         return scrape_text_from_url(user_input)
     else:
-        print("222")
         return user_input  # Treat input as plain text
 
 
@@ -211,7 +218,7 @@ def process_user_input(user_input):
 #     return formatted_response
 
 # 웹사이트 제목
-st.title("Easy Read Generator")
+st.title("읽기쉬운 자료 제작 서비스")
 
 # if "openai_model" not in st.session_state:
 #     st.session_state["openai_model"] = "gpt-3.5-turbo"
@@ -241,7 +248,7 @@ if prompt := st.chat_input("Enter text or URL"):
 
         for chunk in result["output"].split():
             #full_response += chunk + " "
-            full_response += chunk.replace('.', '.\n\n') + " " 
+            full_response += chunk.replace('.', '.\n\n').replace(',', ',\n\n') + " " 
             time.sleep(0.1) 
             message_placeholder.markdown(full_response + "▌") 
         message_placeholder.markdown(full_response) 
